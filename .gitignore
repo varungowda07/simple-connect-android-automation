@@ -1,0 +1,31 @@
+# Maven
+target/
+!test-output/              # ← KEEP REPORTS for GitHub Pages
+
+# IntelliJ IDEA (KEEP modules for team)
+.idea/modules.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/libraries/
+*.iws
+*.iml
+*.ipr
+
+# Test configs (local only)
+LambdaTesting.xml
+Local+LambdaTesting.xml
+LocalTesting.xml
+
+# Local apps
+apps/
+
+# OS/Logs
+.DS_Store
+*.log
+Thumbs.db
+
+# Eclipse/NetBeans/VSCode (if used)
+.classpath
+.project
+.settings
+.vscode/
