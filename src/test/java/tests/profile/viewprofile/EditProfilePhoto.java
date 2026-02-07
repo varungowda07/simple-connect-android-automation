@@ -1,16 +1,24 @@
 package tests.profile.viewprofile;
 
+import io.appium.java_client.AppiumBy;
+import io.appium.java_client.TouchAction;
+import io.appium.java_client.touch.offset.PointOption;
 import listeners.ExtentLogger;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.asserts.SoftAssert;
 import tests.base.BaseTest;
+import tests.utils.UniversalMethods;
+
+import java.util.Map;
 
 import static io.appium.java_client.AppiumBy.androidUIAutomator;
 
 public class EditProfilePhoto extends BaseTest {
 
     private final SoftAssert softAssert = new SoftAssert();
+    UniversalMethods universalMethods = new UniversalMethods();
 
     // ====================== FLOW ======================
 
@@ -23,12 +31,12 @@ public class EditProfilePhoto extends BaseTest {
         clickCloseIcon();
         clickEditPhoto();
         clickTakePhoto();
-        if(clickShutterButton()) {
-            clickOkButton();
-        }
-        else {
-            driver.navigate().back();
-        }
+        universalMethods.verifyAndClick(
+                AppiumBy.androidUIAutomator("new UiSelector().text(\"While using the app\")"),
+                "While Using App",
+                true
+        );
+        takePhoto();
 
 
         ExtentLogger.info("✅ Edit Profile Photo Flow Completed");
@@ -116,50 +124,56 @@ public class EditProfilePhoto extends BaseTest {
             fail("❌ Failed to click Take a Photo", e);
         }
     }
+    public void takePhotoByTap() {
+        // Tap CENTER of screen (camera button usually there)
+        Dimension size = driver.manage().window().getSize();
+        int centerX = size.width / 2;
+        int centerY = size.height * 3 / 4;  // Bottom-center (shutter position)
 
-    private boolean clickShutterButton() {
+        new TouchAction(driver)
+                .tap(PointOption.point(centerX, centerY))
+                .perform();
+
         try {
-            WebElement shutterButton = wait.until(
-                    ExpectedConditions.elementToBeClickable(
-                            androidUIAutomator(
-                                    "new UiSelector().resourceId(\"com.sec.android.app.camera:id/normal_center_button\")"
-                            )
-                    )
-            );
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            System.out.println(e);
+        }
 
-            softAssert.assertTrue(shutterButton.isDisplayed(),
-                    "❌ Shutter button not displayed");
-
-            shutterButton.click();
-            ExtentLogger.pass("✅ Shutter button clicked");
-            return true;
-
-        } catch (Exception e) {
-            fail("❌ Failed to click Shutter button", e);
-            return false;
+        // Confirm photo
+        try {
+            driver.findElement(AppiumBy.accessibilityId("OK")).click();
+            driver.findElement(AppiumBy.accessibilityId("Done")).click();
+            driver.findElement(AppiumBy.accessibilityId("Tick")).click();
+            driver.findElement(AppiumBy.accessibilityId("Confirm")).click();
+        } catch (Exception ignored) {
+            safeBack();
+            safeBack();
         }
     }
 
-    private void clickOkButton() {
-        try {
-            WebElement okButton = wait.until(
-                    ExpectedConditions.elementToBeClickable(
-                            androidUIAutomator("new UiSelector().text(\"OK\")")
-                    )
-            );
-
-            softAssert.assertTrue(okButton.isDisplayed(),
-                    "❌ OK button not displayed");
-
-            okButton.click();
-            ExtentLogger.pass("✅ OK button clicked");
-
-        } catch (Exception e) {
-            fail("❌ Failed to click OK button", e);
-        }
-    }
 
     // ====================== HELPERS ======================
+    public void takePhoto() {
+        try {
+            universalMethods.verifyAndClick(
+                    AppiumBy.androidUIAutomator("new UiSelector().resourceId(\"com.myos.camera:id/photo_shutter_button_photo\")"),
+                            "Shutter click",
+                            true);
+
+            driver.findElement(AppiumBy.accessibilityId("OK")).click();
+            driver.findElement(AppiumBy.accessibilityId("Done")).click();
+            driver.findElement(AppiumBy.accessibilityId("Tick")).click();
+            driver.findElement(AppiumBy.accessibilityId("Confirm")).click();
+            driver.findElement(AppiumBy.accessibilityId("Take photo")).click();
+
+
+        } catch (Exception ignored) {
+            safeBack();
+            safeBack();
+        }
+    }
+
 
     private void fail(String message, Exception e) {
         ExtentLogger.failWithScreenshot(message);

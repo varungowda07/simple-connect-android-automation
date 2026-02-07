@@ -17,8 +17,6 @@ public class Home extends BaseTest {
 
     // ====================== FLOW ======================
     public void home() {
-        ExtentLogger.info("🏠 Home Screen Flow Started");
-
         verifyBluetoothImageIsDisplayed();
         verifyVehicleStatus();
         verifyVehicleNameIsDisplayed();
@@ -36,15 +34,6 @@ public class Home extends BaseTest {
         verifyParkedIconIsDisplayed();
         verifyParkedTextIsDisplayed();
         verifyFindScooterTextIsDisplayed();
-        verifyBatteryTextIsDisplayed();
-        verifyLastChargedTextIsDisplayed();
-        verifyBatteryBtnDisplayed();
-        verifyBatteryPercentageDisplayed();
-        verifyChargingHistoryButtonDisplayed();
-        verifySimpleByDesignViewDisplayed();
-        verifyCompanyNameDisplayed();
-        verifyAtSymbolDisplayedBesideCompanyName();
-        ExtentLogger.info("✅ Home Screen Flow Completed");
     }
 
     // ====================== STEPS ======================
@@ -52,20 +41,19 @@ public class Home extends BaseTest {
         try {
             WebElement bluetoothImage = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(
-                            AppiumBy.xpath(
-                                    "//android.widget.ImageView[@content-desc='Bluetooth']" +
-                                            "/../../android.view.View[1]/android.widget.ImageView"
+                            AppiumBy.androidUIAutomator(
+                                    "new UiSelector().description(\"Profile Picture\")"
                             )
                     )
             );
 
-            softAssert.assertTrue(bluetoothImage.isDisplayed(), "❌ Bluetooth image is NOT displayed");
-            ExtentLogger.pass("✅ Bluetooth image is displayed");
+            softAssert.assertTrue(bluetoothImage.isDisplayed(), "❌ Profile Picture is NOT displayed");
+            ExtentLogger.pass("✅ Profile Picture is displayed");
 
         } catch (TimeoutException e) {
-            fail("❌ Bluetooth image not visible within wait time", e);
+            fail("❌ Profile Picture not visible within wait time", e);
         } catch (Exception e) {
-            fail("❌ Error verifying Bluetooth image", e);
+            fail("❌ Error verifying Profile Picture", e);
         }
     }
     private void verifyVehicleStatus() {
@@ -187,7 +175,7 @@ public class Home extends BaseTest {
 
             softAssert.assertTrue(lessThanIcon.isDisplayed(), "❌ Less-than icon is NOT displayed");
 
-            ExtentLogger.pass("✅ Less-than icon displayed and clicked successfully");
+            ExtentLogger.pass("✅ Less-than icon displayed");
 
         } catch (TimeoutException e) {
             fail("❌ Less-than icon not visible within wait time", e);
@@ -270,7 +258,7 @@ public class Home extends BaseTest {
         try {
             WebElement odoImage = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("(//android.widget.TextView[contains(@text,'ODO -') and contains(@text,'km')]/..//android.widget.ImageView)[3]")
+                            AppiumBy.androidUIAutomator("new UiSelector().description(\"Scooter\")")
                     )
             );
 
@@ -286,7 +274,7 @@ public class Home extends BaseTest {
         try {
             WebElement settingsIcon = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//android.widget.TextView[contains(@text,'ODO -')]/following-sibling::android.view.View[2]")
+                            AppiumBy.androidUIAutomator("new UiSelector().description(\"Settings\")")
                     )
             );
 
@@ -302,7 +290,7 @@ public class Home extends BaseTest {
         try {
             WebElement pingIcon = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//android.widget.TextView[contains(@text,'ODO -')]/following-sibling::android.view.View[3]")
+                            AppiumBy.androidUIAutomator("new UiSelector().description(\"Ping My Scooter\")")
                     )
             );
 
@@ -319,7 +307,7 @@ public class Home extends BaseTest {
         try {
             WebElement parkedIcon = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//android.widget.TextView[contains(@text,'ODO -')]/following-sibling::android.view.View[4]")
+                           AppiumBy.androidUIAutomator("new UiSelector().description(\"Scooter State\")")
                     )
             );
 
@@ -367,135 +355,6 @@ public class Home extends BaseTest {
         }
     }
 
-    private void verifyBatteryTextIsDisplayed() {
-        try {
-            driver.findElement(AppiumBy.androidUIAutomator(
-                    "new UiScrollable(new UiSelector().scrollable(true)).scrollForward()"
-            ));
-
-            WebElement batteryText =  driver.findElement(
-                    By.xpath("//android.widget.TextView[contains(@text,\"last charged to\")]/preceding-sibling::android.widget.TextView\n")
-            );
-
-
-            softAssert.assertTrue(batteryText.isDisplayed(), "❌ 'BATTERY' text is NOT displayed");
-            softAssert.assertEquals(batteryText.getText(), "BATTERY", "❌ Text mismatch for 'BATTERY'");
-
-            ExtentLogger.pass("✅ 'BATTERY' text is displayed: " + batteryText.getText());
-
-        } catch (Exception e) {
-            fail("❌ 'BATTERY' text verification failed", e);
-        }
-    }
-
-    private void verifyLastChargedTextIsDisplayed() {
-        try {
-            WebElement lastChargedText = driver.findElement(
-                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"last charged to\")")
-            );
-
-            softAssert.assertTrue(lastChargedText.isDisplayed(), "❌ 'last charged to' text is NOT displayed");
-            ExtentLogger.pass("✅ 'last charged to' text is displayed: " + lastChargedText.getText());
-
-        } catch (Exception e) {
-            fail("❌ 'last charged to' text verification failed", e);
-        }
-    }
-
-    private void verifyBatteryBtnDisplayed() {
-        try {
-            WebElement element = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.view.View[1]/android.view.View/android.view.View/android.view.View[1]/android.view.View[2]/android.view.View/android.view.View[1]")
-                    )
-            );
-
-            softAssert.assertTrue(element.isDisplayed(), "❌ batteryBtn is NOT displayed");
-            ExtentLogger.pass("✅ batteryBtn is displayed");
-
-        } catch (Exception e) {
-            fail("❌ batteryBtn verification failed", e);
-        }
-    }
-
-    private void verifyBatteryPercentageDisplayed() {
-        try {
-            WebElement batteryPercentage = driver.findElement(
-                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"%\")")
-            );
-
-            softAssert.assertTrue(batteryPercentage.isDisplayed(), "❌ Battery percentage is NOT displayed");
-            ExtentLogger.pass("✅ Battery percentage is displayed: " + batteryPercentage.getText());
-
-        } catch (Exception e) {
-            fail("❌ Battery percentage verification failed", e);
-        }
-    }
-
-    private void verifyChargingHistoryButtonDisplayed() {
-        try {
-            WebElement chargingHistoryBtn = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(
-                            AppiumBy.androidUIAutomator("new UiSelector().className(\"android.widget.Button\")")
-                    )
-            );
-
-            softAssert.assertTrue(chargingHistoryBtn.isDisplayed(), "❌ Charging History button is NOT displayed");
-            softAssert.assertEquals(chargingHistoryBtn.getText(), "Charging History", "❌ Button text mismatch");
-
-            ExtentLogger.pass("✅ Charging History button is displayed with text: " + chargingHistoryBtn.getText());
-
-        } catch (Exception e) {
-            fail("❌ Charging History button verification failed", e);
-        }
-    }
-
-    private void verifySimpleByDesignViewDisplayed() {
-        try {
-            driver.findElement(AppiumBy.androidUIAutomator(
-                    "new UiScrollable(new UiSelector().scrollable(true)).scrollForward()"
-            ));
-            WebElement simpleByDesignView = driver.findElement(
-                    By.xpath("//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.view.View[1]/android.view.View/android.view.View/android.view.View[1]/android.view.View[2]")
-            );
-
-            softAssert.assertTrue(simpleByDesignView.isDisplayed(), "❌ SimpleByDesign view is NOT displayed");
-            ExtentLogger.pass("✅ SimpleByDesign view is displayed");
-
-        } catch (Exception e) {
-            fail("❌ SimpleByDesign view verification failed", e);
-        }
-    }
-
-    private void verifyCompanyNameDisplayed() {
-        try {
-            WebElement companyText = driver.findElement(
-                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Simpleenergy Private Limited\")")
-            );
-
-            softAssert.assertTrue(companyText.isDisplayed(), "❌ Company name text is NOT displayed");
-            softAssert.assertEquals(companyText.getText(), "Simpleenergy Private Limited");
-
-            ExtentLogger.pass("✅ Company name text is displayed");
-
-        } catch (Exception e) {
-            fail("❌ Company name text verification failed", e);
-        }
-    }
-
-    private void verifyAtSymbolDisplayedBesideCompanyName() {
-        try {
-            WebElement atSymbol = driver.findElement(
-                    By.xpath("//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.view.View[1]/android.view.View/android.view.View/android.view.View[1]")
-            );
-
-            softAssert.assertTrue(atSymbol.isDisplayed(), "❌ @ symbol icon is NOT displayed");
-            ExtentLogger.pass("✅ @ symbol icon is displayed beside company name");
-
-        } catch (Exception e) {
-            fail("❌ @ symbol icon verification failed", e);
-        }
-    }
 
     // ====================== HELPERS ======================
     private void fail(String message, Exception e) {

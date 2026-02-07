@@ -1,17 +1,19 @@
 package tests.profile.viewprofile;
 
+import io.appium.java_client.AppiumBy;
 import listeners.ExtentLogger;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.asserts.SoftAssert;
 import tests.base.BaseTest;
+import tests.utils.UniversalMethods;
 
 import static io.appium.java_client.AppiumBy.androidUIAutomator;
 
 public class EditProfileTests extends BaseTest {
 
     private final SoftAssert softAssert = new SoftAssert();
+    UniversalMethods universalMethods = new UniversalMethods();
 
     // ======================= FLOW =======================
 
@@ -20,16 +22,28 @@ public class EditProfileTests extends BaseTest {
         ExtentLogger.info("👤 Edit Profile Screen Validation Started");
 
         clickAndVerifyEditButton();
-        verifyEditPhotoImage();
-        clickAndVerifySupportIcon();
-        driver.navigate().back();
+        universalMethods.verifyExactText("PROFILE");
+        universalMethods.verifyAndClick(
+                AppiumBy.androidUIAutomator("new UiSelector().description(\"Profile Picture\")"),
+                "Profile Picture",
+                false
+        );
+        universalMethods.verifyAndClick(
+                AppiumBy.androidUIAutomator("new UiSelector().description(\"Support\")"),
+                "Profile Picture",
+                true
+        );
+        universalMethods.verifyExactText("TICKET STATUS");
+        universalMethods.verifyAndClickBackArrow("TICKET");
         verifyFullNameField();
         verifyPincodeField();
         verifyMobileNumberField();
         verifyChangeNoteText();
-        verifyAndValidateEmailId();
-        verifyEmailIdIconDisplayed();
-
+        universalMethods.verifyAndClick(
+                AppiumBy.androidUIAutomator("new UiSelector().description(\"Email ID\")"),
+                "Email Id Description",
+                false
+        );
         ExtentLogger.info("✅ Edit Profile Screen Validation Completed");
     }
 
@@ -51,43 +65,6 @@ public class EditProfileTests extends BaseTest {
 
         } catch (Exception e) {
             fail("❌ Failed to click Edit button", e);
-        }
-    }
-
-    private void verifyEditPhotoImage() {
-        try {
-            WebElement editPhotoImage = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//android.widget.TextView[@text='Edit Photo']/preceding-sibling::android.view.View[3]")
-                    )
-            );
-
-            softAssert.assertTrue(editPhotoImage.isDisplayed(),
-                    "❌ Edit Photo image not displayed");
-
-            ExtentLogger.pass("✅ Edit Photo image displayed");
-
-        } catch (Exception e) {
-            fail("❌ Edit Photo image not displayed", e);
-        }
-    }
-
-    private void clickAndVerifySupportIcon() {
-        try {
-            WebElement supportIcon = wait.until(
-                    ExpectedConditions.elementToBeClickable(
-                            By.xpath("//android.widget.TextView[@text='Edit Photo']/preceding-sibling::android.view.View[2]")
-                    )
-            );
-
-            softAssert.assertTrue(supportIcon.isDisplayed(),
-                    "❌ Support icon not displayed");
-
-            supportIcon.click();
-            ExtentLogger.pass("✅ Support icon clicked");
-
-        } catch (Exception e) {
-            fail("❌ Failed to click Support icon", e);
         }
     }
 
@@ -135,7 +112,7 @@ public class EditProfileTests extends BaseTest {
         try {
             WebElement mobileField = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(
-                            androidUIAutomator("new UiSelector().text(\"Mobile number\")")
+                            androidUIAutomator("new UiSelector().text(\"Mobile Number\")")
                     )
             );
 
@@ -172,54 +149,6 @@ public class EditProfileTests extends BaseTest {
 
         } catch (Exception e) {
             fail("❌ Change note text verification failed", e);
-        }
-    }
-
-    private void verifyAndValidateEmailId() {
-        try {
-            WebElement emailLabel = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(
-                            androidUIAutomator("new UiSelector().text(\"Email ID\")")
-                    )
-            );
-
-            softAssert.assertTrue(emailLabel.isDisplayed(),
-                    "❌ Email ID label not displayed");
-
-            WebElement emailValue = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//android.widget.TextView[@text='Email ID']/following-sibling::android.widget.TextView")
-                    )
-            );
-
-//            String email = emailValue.getText().trim();
-//            softAssert.assertTrue(
-//                    email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"),
-//                    "❌ Invalid Email ID: " + email
-//            );
-//
-//            ExtentLogger.pass("✅ Email validated: " + email);
-
-        } catch (Exception e) {
-            fail("❌ Email ID verification failed", e);
-        }
-    }
-
-    private void verifyEmailIdIconDisplayed() {
-        try {
-            WebElement emailIcon = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//android.widget.TextView[@text='Email ID']/following-sibling::android.view.View")
-                    )
-            );
-
-            softAssert.assertTrue(emailIcon.isDisplayed(),
-                    "❌ Email ID icon not displayed");
-
-            ExtentLogger.pass("✅ Email ID icon displayed");
-
-        } catch (Exception e) {
-            fail("❌ Email ID icon verification failed", e);
         }
     }
 

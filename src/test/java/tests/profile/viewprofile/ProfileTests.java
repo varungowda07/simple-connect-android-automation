@@ -40,7 +40,7 @@ public class ProfileTests extends BaseTest {
         try {
             WebElement profileBtn = wait.until(
                     ExpectedConditions.elementToBeClickable(
-                            androidUIAutomator("new UiSelector().description(\"Placeholder\").instance(1)")
+                            androidUIAutomator("new UiSelector().description(\"Profile\")")
                     )
             );
 
@@ -131,14 +131,14 @@ public class ProfileTests extends BaseTest {
     private void validateAppVersionText() {
         try {
             WebElement versionText = driver.findElement(
-                    AppiumBy.androidUIAutomator("new UiSelector().text(\"Version 2.0.0\")")
+                    AppiumBy.androidUIAutomator("new UiSelector().text(\"Version 2.1.0.DEBUG\")")
             );
 
-            softAssert.assertTrue(versionText.isDisplayed(), "❌ App version 'Version 2.0.0' not displayed");
+            softAssert.assertTrue(versionText.isDisplayed(), "❌ App version 'Version 2.1.0.DEBUG' not displayed");
             ExtentLogger.pass("✅ App version displayed: " + versionText.getText());
 
         } catch (Exception e) {
-            fail("❌ App version 'Version 2.0.0' not found", e);
+            fail("❌ App version 'Version 2.1.0.DEBUG' not found", e);
         }
     }
 

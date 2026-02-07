@@ -20,7 +20,7 @@ public class EditPincode extends BaseTest {
         ExtentLogger.info("📍 Edit Pincode Flow Started");
 
         enterAndVerifyRandomPincode();
-        driver.navigate().back();
+        safeBack();
 
         ExtentLogger.info("✅ Edit Pincode Flow Completed");
     }

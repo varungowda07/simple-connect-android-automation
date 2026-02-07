@@ -1,26 +1,42 @@
 package tests.profile.viewprofile;
 
+import io.appium.java_client.AppiumBy;
 import listeners.ExtentLogger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.asserts.SoftAssert;
 import tests.base.BaseTest;
+import tests.utils.UniversalMethods;
 
 import static io.appium.java_client.AppiumBy.androidUIAutomator;
 
 public class ViewProfile extends BaseTest {
-
+    ProfileTests profileTests = new ProfileTests();
     private final SoftAssert softAssert = new SoftAssert();
+    UniversalMethods universalMethods = new UniversalMethods();
+
 
     // ====================== FLOW ======================
     public void viewProfile() {
         ExtentLogger.info("📋 View Profile Flow Started");
         sleep(5000);
 
-        navigateToProfileScreen();
+        profileTests.navigateToProfileScreen();
         scrollAndClickViewProfileSameScreen();
-
+        universalMethods.verifyExactText("PROFILE");
+        universalMethods.verifyAndClick(
+                AppiumBy.androidUIAutomator("new UiSelector().description(\"Support\")"),
+                "Support Icon",
+                true
+        );
+        universalMethods.verifyExactText("TICKET STATUS");
+        universalMethods.verifyAndClickBackArrow("TICKET STATUS");
+        universalMethods.verifyAndClick(
+                AppiumBy.androidUIAutomator("new UiSelector().description(\"Profile Picture\")"),
+                "Profile Picture",
+                false
+        );
         validateName();
         validatePhone();
         validateVerifiedDescription();
@@ -30,9 +46,7 @@ public class ViewProfile extends BaseTest {
         validatePincodeValue();
         validateConsentText();
         interactWithTermsPrivacyLinks();
-        navigateSupport();
 
-        driver.navigate().back();
 
         ExtentLogger.info("✅ View Profile Flow Completed");
 
@@ -40,32 +54,15 @@ public class ViewProfile extends BaseTest {
 
     // ====================== STEPS ======================
 
-    private void navigateToProfileScreen() {
-        try {
-            ExtentLogger.info("Navigating to Profile screen");
-
-            WebElement profileBtn = wait.until(ExpectedConditions.elementToBeClickable(
-                    androidUIAutomator("new UiSelector().description(\"Placeholder\").instance(1)")
-            ));
-
-            softAssert.assertTrue(profileBtn.isDisplayed(), "❌ Profile button not displayed");
-            profileBtn.click();
-
-            ExtentLogger.pass("✅ Profile screen navigated");
-
-        } catch (Exception e) {
-            fail("❌ Profile navigation failed", e);
-        }
-    }
 
     private void scrollAndClickViewProfileSameScreen() {
         try {
             ExtentLogger.info("Clicking View Profile");
-
-            WebElement viewProfile = driver.findElement(
-                    androidUIAutomator("new UiSelector().text(\"View Profile\")")
+            WebElement viewProfile = wait.until(
+                    ExpectedConditions.elementToBeClickable(
+                            androidUIAutomator("new UiSelector().text(\"View Profile\")")
+                    )
             );
-
             softAssert.assertTrue(viewProfile.isDisplayed(), "❌ View Profile not visible");
             viewProfile.click();
 
@@ -204,22 +201,6 @@ public class ViewProfile extends BaseTest {
 
         } catch (Exception e) {
             fail("❌ Terms/Privacy validation failed", e);
-        }
-    }
-
-    private void navigateSupport() {
-        try {
-            WebElement support = wait.until(ExpectedConditions.elementToBeClickable(
-                    androidUIAutomator("new UiSelector().className(\"android.view.View\").instance(5)")
-            ));
-
-            softAssert.assertTrue(support.isDisplayed(), "❌ Support button not displayed");
-            support.click();
-
-            ExtentLogger.pass("✅ Support screen navigated");
-
-        } catch (Exception e) {
-            fail("❌ Support navigation failed", e);
         }
     }
 

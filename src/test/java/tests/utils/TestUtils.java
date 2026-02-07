@@ -1,6 +1,7 @@
 package tests.utils;
 
 import tests.base.BaseTest;
+import tests.bluetooth.BluetoothFlow;
 
 public class TestUtils extends BaseTest {
 
@@ -17,6 +18,6 @@ public class TestUtils extends BaseTest {
     }
 
     public static void executeBluetooth() {
-        new tests.bluetooth.BluetoothTests().bluetoothFlow();
+        new BluetoothFlow().bluetoothFlow();
     }
 }

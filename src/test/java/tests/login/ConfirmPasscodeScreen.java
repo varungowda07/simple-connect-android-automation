@@ -6,11 +6,13 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.asserts.SoftAssert;
 import tests.base.BaseTest;
+import tests.utils.UniversalMethods;
 
 public class ConfirmPasscodeScreen extends BaseTest {
 
     private final SoftAssert softAssert = new SoftAssert();
     private final String passcode = "1234";
+    UniversalMethods universalMethods = new UniversalMethods();
 
     // ====================== TEST ENTRY ======================
     public void confirmPasscode() {
@@ -20,6 +22,11 @@ public class ConfirmPasscodeScreen extends BaseTest {
         verifyReEnter4DigitPasscodeText();
         enter4DigitPasscode(passcode);
         verifyAndClickConfirmButton();
+        universalMethods.verifyAndClick(
+                AppiumBy.androidUIAutomator("new UiSelector().text(\"Allow\")"),
+                "Allow",
+                true
+        );
 
         ExtentLogger.info("✅ Confirm Passcode Screen Test Completed");
     }
@@ -29,7 +36,7 @@ public class ConfirmPasscodeScreen extends BaseTest {
     private void verifyConfirmPasscodeText() {
         try {
             WebElement confirmPasscodeText = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Confirm\")")
+                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Confirm Passcode\")")
             ));
 
             String actualText = confirmPasscodeText.getText();
@@ -47,7 +54,7 @@ public class ConfirmPasscodeScreen extends BaseTest {
     private void verifyReEnter4DigitPasscodeText() {
         try {
             WebElement passcodeText = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    AppiumBy.androidUIAutomator("new UiSelector().text(\"Re-enter your 4-digit passcode.\")")
+                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Re-enter your 4-digit passcode.\")")
             ));
 
             softAssert.assertTrue(passcodeText.isDisplayed(),

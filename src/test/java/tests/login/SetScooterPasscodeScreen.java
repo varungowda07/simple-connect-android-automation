@@ -29,7 +29,7 @@ public class SetScooterPasscodeScreen extends BaseTest {
     private void verifySetScooterPasscodeText() {
         try {
             WebElement passcodeText = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Set scooter\")")
+                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Set Scooter\")")
             ));
 
             String actualText = passcodeText.getText();
@@ -79,7 +79,7 @@ public class SetScooterPasscodeScreen extends BaseTest {
     private void verifyAndClickContinueButton() {
         try {
             WebElement continueBtn = wait.until(ExpectedConditions.elementToBeClickable(
-                    AppiumBy.androidUIAutomator("new UiSelector().text(\"Continue\")")
+                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Continue\")")
             ));
 
             softAssert.assertTrue(continueBtn.isDisplayed(),

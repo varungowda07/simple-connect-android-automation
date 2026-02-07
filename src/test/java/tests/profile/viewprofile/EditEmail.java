@@ -1,11 +1,13 @@
 package tests.profile.viewprofile;
 
+import io.appium.java_client.AppiumBy;
 import listeners.ExtentLogger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.asserts.SoftAssert;
 import tests.base.BaseTest;
+import tests.utils.UniversalMethods;
 
 import java.util.Random;
 
@@ -15,6 +17,7 @@ public class EditEmail extends BaseTest {
 
     private final SoftAssert softAssert = new SoftAssert();
     private final EditProfileTests editProfileTests = new EditProfileTests();
+    UniversalMethods universalMethods = new UniversalMethods();
 
     // ====================== FLOW ======================
 
@@ -23,12 +26,30 @@ public class EditEmail extends BaseTest {
         ExtentLogger.info("📧 Edit Email Flow Started");
 
         enterRandomEmailId();
-        openEmailInfoView();
+        universalMethods.verifyAndClick(
+                AppiumBy.androidUIAutomator("new UiSelector().description(\"Email ID\")"),
+                "Email Id description",
+                true
+        );
         closeEmailInfoView();
-        openEmailInfoView();
-        verifyInfoViewDisplayed();
+        universalMethods.verifyAndClick(
+                AppiumBy.androidUIAutomator("new UiSelector().description(\"Email ID\")"),
+                "Email Id description",
+                true
+        );
+        universalMethods.verifyAndClick(
+                AppiumBy.androidUIAutomator("new UiSelector().description(\"Info\")"),
+                "Info Icon",
+                false
+        );
+
         verifyVerificationLinkText();
         clickSendLink();
+        universalMethods.verifyAndClick(
+                AppiumBy.androidUIAutomator("new UiSelector().description(\"Check\")"),
+                "Info Icon",
+                false
+        );
         verifyConfirmationLinkText();
         clickDone();
         enterRandomEmailId();

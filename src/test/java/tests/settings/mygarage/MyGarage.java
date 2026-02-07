@@ -12,36 +12,45 @@ public class MyGarage extends BaseTest {
     SoftAssert softAssert = new SoftAssert();
     public void myGarage() {
         ExtentLogger.info("MyGarage screen test started");
-        verifySettingsIconIsDisplayed();
-        if(clickBackArrowFromMyGarage()) {
-            verifySettingsIconIsDisplayed();
+        if(verifySettingsIconIsDisplayed()) {
+            if(clickBackArrowFromMyGarage()) {
+                verifySettingsIconIsDisplayed();
+            }
+            verifyMyGarageTextDisplayed();
+            if(verifyScooterManualDisplayed()) {
+                driver.navigate().back();
+            }
+            verifyScooterNameDisplayed();
+            verifyScooterModelAndColorDisplayed();
+            verifyIndImageDisplayedBesideRegistration();
+            verifyRegistrationNumberDisplayed();
+            verifyVehicleImageDisplayed();
+            if(verifyVehicleCountDisplayed()) {
+                verifySwipeToSwitchVehicleTextDisplayed();
+            }
+
         }
-        verifyMyGarageTextDisplayed();
-        if(verifyScooterManualDisplayed()) {
-            driver.navigate().back();
-        }
-        verifyScooterNameDisplayed();
-        verifyScooterModelAndColorDisplayed();
-        verifyIndImageDisplayedBesideRegistration();
-        verifyRegistrationNumberDisplayed();
-        verifyVehicleImageDisplayed();
+
+
 
     }
 
-    private void verifySettingsIconIsDisplayed() {
+    public boolean verifySettingsIconIsDisplayed() {
         try {
             WebElement settingsIcon = wait.until(
                     ExpectedConditions.elementToBeClickable(
-                            By.xpath("//android.widget.TextView[contains(@text,'ODO -')]/following-sibling::android.view.View[2]")
+                            AppiumBy.androidUIAutomator("new UiSelector().description(\"Settings\")")
                     )
             );
 
             softAssert.assertTrue(settingsIcon.isDisplayed(), "❌ Settings icon is NOT displayed");
             settingsIcon.click();
             ExtentLogger.pass("✅ Settings icon is displayed and clicked");
+            return true;
 
         } catch (Exception e) {
             fail("❌ Settings icon verification/click failed", e);
+            return false;
         }
     }
     private boolean clickBackArrowFromMyGarage() {
@@ -135,7 +144,7 @@ public class MyGarage extends BaseTest {
         try {
             WebElement indImage = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//android.widget.TextView[contains(@text,'MY GARAGE')]/following-sibling::android.widget.TextView[1]/following-sibling::android.view.View/android.widget.ImageView")
+                            By.xpath("//android.widget.ScrollView/android.view.View[1]/android.view.View[3]/android.view.View")
                     )
             );
 
@@ -176,6 +185,59 @@ public class MyGarage extends BaseTest {
             fail("❌ Vehicle image verification failed", e);
         }
     }
+    private boolean verifyVehicleCountDisplayed() {
+        try {
+            WebElement vehicleCount = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                            By.xpath("//android.widget.TextView[@text='MY GARAGE']/following-sibling::android.widget.TextView[3]")
+                    )
+            );
+
+            String text = vehicleCount.getText().trim(); // e.g., "1/3"
+
+            // Verify format X/Y
+            softAssert.assertTrue(text.matches("\\d+/\\d+"),
+                    "❌ Vehicle count format invalid: " + text);
+
+            String[] parts = text.split("/");
+            int selected = Integer.parseInt(parts[0]);
+            int total = Integer.parseInt(parts[1]);
+
+            // Logical validation
+            softAssert.assertTrue(selected >= 1, "❌ Selected vehicle index invalid: " + selected);
+            softAssert.assertTrue(total >= 1, "❌ Total vehicle count invalid: " + total);
+            softAssert.assertTrue(selected <= total,
+                    "❌ Selected vehicle index greater than total: " + text);
+
+            ExtentLogger.pass("✅ Vehicle count displayed correctly: " + text);
+            return true;
+
+        } catch (Exception e) {
+            fail("❌ Vehicle count verification failed", e);
+            return false;
+        }
+    }
+    private void verifySwipeToSwitchVehicleTextDisplayed() {
+        try {
+            WebElement swipeText = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                            AppiumBy.androidUIAutomator(
+                                    "new UiSelector().textContains(\"Swipe to switch\")"
+                            )
+                    )
+            );
+
+            softAssert.assertTrue(swipeText.isDisplayed(),
+                    "❌ 'Swipe to switch vehicle' text is NOT displayed");
+
+            ExtentLogger.pass("✅ 'Swipe to switch vehicle' text is displayed");
+
+        } catch (Exception e) {
+            fail("❌ 'Swipe to switch vehicle' text verification failed", e);
+        }
+    }
+
+
 
 
 

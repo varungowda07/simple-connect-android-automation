@@ -30,7 +30,7 @@ public class BaseTest {
 
     protected static final String APP_PACKAGE = "com.sepl.android.dev";
     protected static final String APP_PATH =
-            System.getProperty("user.dir") + "/apps/presentation-dev-debug (2).apk";
+            System.getProperty("user.dir") + "/apps/presentation-dev-debug (6).apk";
 
     // ===================== REPORT SETUP =====================
     @BeforeClass
@@ -40,8 +40,10 @@ public class BaseTest {
 
     @BeforeMethod
     public void setupTest(Method method) {
+
         ExtentTest test = extent.createTest(method.getName());
         extentTest.set(test);
+        forceKillApp();
 //        ExtentLogger.setExtentTest(extentTest.get());
     }
 
@@ -53,7 +55,6 @@ public class BaseTest {
     // ===================== APPIUM SETUP =====================
     @BeforeSuite(alwaysRun = true)
     public void setUp() throws Exception {
-
         if (isSetupDone) return;
         try {
             AuthApi.authApi();
@@ -82,13 +83,14 @@ public class BaseTest {
         if (!driver.isAppInstalled(APP_PACKAGE)) {
             driver.installApp(APP_PATH);
         }
+
 //        driver.terminateApp(APP_PACKAGE);
+        forceKillApp();
+        Thread.sleep(2000);
 
 
         driver.activateApp(APP_PACKAGE);
 
-        enableNotifications(APP_PACKAGE);
-        handleNotificationPermissionPopup();
 
 //        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
         wait = new WebDriverWait(driver, Duration.ofSeconds(30));
@@ -96,6 +98,20 @@ public class BaseTest {
         isSetupDone = true;
         System.out.println("✅ Appium session STARTED");
     }
+    private void forceKillApp() {
+        try {
+            // ADB force stop - 100% works
+            Map<String, Object> args = new HashMap<>();
+            args.put("command", "am force-stop " + APP_PACKAGE);
+            driver.executeScript("mobile: shell", args);
+            Thread.sleep(2000);
+            System.out.println("✅ Force killed via ADB");
+        } catch (Exception e) {
+            System.out.println("⚠️ Force kill failed");
+        }
+    }
+
+
 
     // ===================== TERMINATE + ACTIVATE AFTER EACH FLOW =====================
     @AfterMethod(alwaysRun = true)
@@ -105,13 +121,13 @@ public class BaseTest {
 
             Map<String, Object> terminateArgs = new HashMap<>();
             terminateArgs.put("appId", APP_PACKAGE);
-            terminateArgs.put("timeout", 8000); // Samsung-safe timeout
+            terminateArgs.put("timeout", 1500); // Samsung-safe timeout
 
             driver.executeScript("mobile: terminateApp", terminateArgs);
-            Thread.sleep(10000);
+            Thread.sleep(500);
 
             driver.activateApp(APP_PACKAGE);
-            Thread.sleep(4000);
+            Thread.sleep(1000);
 
             System.out.println("✅ App terminated and activated successfully");
 
@@ -127,47 +143,88 @@ public class BaseTest {
             }
         }
     }
+    public static void safeBack() {
+        try {
+            // Try normal back first
+            driver.navigate().back();
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            // Fallback: Device keyevent
+            Map<String, Object> params = Map.of("command", "input keyevent 4");
+            driver.executeScript("mobile: shell", params);
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException ex) {
+                System.out.println(ex);
+            }
+        }
+    }
+    private void clearAppData(String packageName) throws Exception {
+        System.out.println("Clearing app data via ADB...");
+        Process process = Runtime.getRuntime().exec("adb shell pm clear " + packageName);
+        process.waitFor();
+        System.out.println("App data cleared");
+    }
+
 
     // ===================== CLEANUP =====================
     @AfterSuite(alwaysRun = true)
     public void tearDown() {
-        if (driver != null) {
+        try {
+//            // 🔥 CLEAR APP DATA FIRST
+//            Map<String, Object> clearArgs = new HashMap<>();
+//            clearArgs.put("appPackage", APP_PACKAGE);
+//            driver.executeScript("mobile: clearAppData", clearArgs);
+//            Thread.sleep(2000);
+//
+//            // Then quit
+            clearAppData(APP_PACKAGE);
             driver.quit();
-            System.out.println("✅ Appium session CLOSED");
-        }
-    }
+            System.out.println("✅ Appium session CLOSED + DATA CLEARED");
 
-    // ===================== UTILITIES =====================
-    private void enableNotifications(String packageName) {
-        try {
-            HashMap<String, Object> args = new HashMap<>();
-            args.put("command", "appops");
-            args.put("args", new String[]{
-                    "set",
-                    packageName,
-                    "POST_NOTIFICATION",
-                    "allow"
-            });
-
-            driver.executeScript("mobile: shell", args);
-            System.out.println("✅ Notifications enabled");
         } catch (Exception e) {
-            System.out.println("⚠️ Notification enable failed: " + e.getMessage());
+            System.out.println("⚠️ Cleanup failed: " + e.getMessage());
+        }
+        finally {
+            if(driver!= null) {
+                driver.quit();
+                System.out.println("✅ Appium session CLOSED + DATA CLEARED");
+            }
+
         }
     }
 
-    protected void handleNotificationPermissionPopup() {
-        try {
-            driver.findElement(
-                    AppiumBy.androidUIAutomator(
-                            "new UiSelector().textMatches(\"(?i)allow|while using the app\")"
-                    )
-            ).click();
-            System.out.println("✅ Notification permission accepted");
-        } catch (Exception ignored) {
-            System.out.println("ℹ️ No notification popup shown");
-        }
-    }
+//    // ===================== UTILITIES =====================
+//    private void enableNotifications(String packageName) {
+//        try {
+//            HashMap<String, Object> args = new HashMap<>();
+//            args.put("command", "appops");
+//            args.put("args", new String[]{
+//                    "set",
+//                    packageName,
+//                    "POST_NOTIFICATION",
+//                    "allow"
+//            });
+//
+//            driver.executeScript("mobile: shell", args);
+//            System.out.println("✅ Notifications enabled");
+//        } catch (Exception e) {
+//            System.out.println("⚠️ Notification enable failed: " + e.getMessage());
+//        }
+//    }
+//
+//    protected void handleNotificationPermissionPopup() {
+//        try {
+//            driver.findElement(
+//                    AppiumBy.androidUIAutomator(
+//                            "new UiSelector().textMatches(\"(?i)allow|while using the app\")"
+//                    )
+//            ).click();
+//            System.out.println("✅ Notification permission accepted");
+//        } catch (Exception ignored) {
+//            System.out.println("ℹ️ No notification popup shown");
+//        }
+//    }
 }
 //
 ////package tests.base;

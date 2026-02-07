@@ -10,6 +10,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClick
 public class LogoutTests extends BaseTest {
 
     private final SoftAssert softAssert = new SoftAssert();
+    ProfileTests profileTests = new ProfileTests();
 
     // @Test
     public void performLogoutFromAnyScreen() {
@@ -22,15 +23,8 @@ public class LogoutTests extends BaseTest {
 
     private void executeLogoutFlow() {
         try {
-            // Open Profile
-            var profileBtn = wait.until(elementToBeClickable(
-                    androidUIAutomator("new UiSelector().description(\"Placeholder\").instance(1)")
-            ));
-            softAssert.assertTrue(profileBtn.isDisplayed(),
-                    "❌ Profile button not displayed");
+            profileTests.navigateToProfileScreen();
 
-            profileBtn.click();
-            ExtentLogger.pass("Profile button clicked");
 
             // Scroll to Logout
             var logoutBtn = wait.until(elementToBeClickable(androidUIAutomator(

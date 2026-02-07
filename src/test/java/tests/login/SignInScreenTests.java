@@ -519,7 +519,7 @@ public class SignInScreenTests extends BaseTest {
         verifyLogo();
         verifyConsentTextAndLinks();
         clickSignInButton();
-        driver.navigate().back();
+        safeBack();
         clickSignInButton();
         ExtentLogger.info("✅ Sign In screen test completed");
     }
@@ -572,7 +572,7 @@ public class SignInScreenTests extends BaseTest {
         WebElement consentText;
         try {
             consentText = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"By continuing , I agree\")")
+                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"By continuing, I agree to the\")")
             ));
         } catch (Exception e) {
             fail("❌ Consent text not found", e);
@@ -605,7 +605,7 @@ public class SignInScreenTests extends BaseTest {
             ExtentLogger.pass("✅ Clicked Terms of Service");
 
             verifyTermsPage();
-            driver.navigate().back();
+            safeBack();
 
         } catch (Exception e) {
             fail("❌ Terms of Service link failed", e);
@@ -618,7 +618,7 @@ public class SignInScreenTests extends BaseTest {
             ExtentLogger.pass("✅ Clicked Privacy Policy");
 
             verifyPrivacyPage();
-            driver.navigate().back();
+            safeBack();
 
         } catch (Exception e) {
             fail("❌ Privacy Policy link failed", e);

@@ -8,10 +8,12 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import tests.base.BaseTest;
+import tests.utils.UniversalMethods;
 
 public class SetYourPasscodeScreen extends BaseTest {
 
     private final SoftAssert softAssert = new SoftAssert();
+    UniversalMethods universalMethods = new UniversalMethods();
 
     // ====================== TEST ENTRY ======================
     public void setYourPasscodeScreen() {
@@ -27,6 +29,21 @@ public class SetYourPasscodeScreen extends BaseTest {
         verifySeamlessControlDescriptionText();
         verifyInfoIconDisplayed();
         verifyPasscodeInfoTextIsDisplayed();
+        universalMethods.verifyAndClick(
+                AppiumBy.androidUIAutomator("new UiSelector().description(\"Enhanced Protection\")\n"),
+                "Enhanced Protection Iocn",
+                false
+        );
+        universalMethods.verifyAndClick(
+                AppiumBy.androidUIAutomator("new UiSelector().description(\"Seamless Control\")\n"),
+                "Seamless Control Icon",
+                false
+        );
+        universalMethods.verifyAndClick(
+                AppiumBy.androidUIAutomator("new UiSelector().description(\"Secure Access\")\n"),
+                "Secure Access Icon",
+                false
+        );
         clickContinueButton();
 
         ExtentLogger.info("✅ Set Your Passcode Screen Test Completed");
@@ -37,7 +54,7 @@ public class SetYourPasscodeScreen extends BaseTest {
     private void verifySetYourPasscodeText() {
         try {
             WebElement passcodeText = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    AppiumBy.androidUIAutomator("new UiSelector().text(\"Set your passcode\")")
+                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Set your\")")
             ));
 
             softAssert.assertEquals(passcodeText.getText().trim(),
@@ -73,7 +90,7 @@ public class SetYourPasscodeScreen extends BaseTest {
     private void verifyEnhancedProtectionText() {
         try {
             WebElement enhancedProtectionText = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    AppiumBy.androidUIAutomator("new UiSelector().text(\"Enhanced Protection\")")
+                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Enhanced Protection\")")
             ));
 
             softAssert.assertEquals(enhancedProtectionText.getText().trim(),
@@ -111,54 +128,56 @@ public class SetYourPasscodeScreen extends BaseTest {
     private void verifyQuickUnlockText() {
         try {
             WebElement quickUnlockText = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    AppiumBy.androidUIAutomator("new UiSelector().text(\"Quick Unlock\")")
+                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Secure Access\")")
             ));
 
             softAssert.assertEquals(quickUnlockText.getText().trim(),
-                    "Quick Unlock",
-                    "❌ Quick Unlock text mismatch");
+                    "Secure Access",
+                    "❌ Secure Access text mismatch");
 
-            ExtentLogger.pass("✅ Quick Unlock text verified");
+            ExtentLogger.pass("✅ Secure Access text verified");
 
         } catch (Exception e) {
-            fail("❌ Quick Unlock text not found or incorrect", e);
+            fail("❌ Secure Access text not found or incorrect", e);
         }
     }
 
     private void verifyQuickUnlockDescriptionText() {
         try {
             WebElement descriptionText = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Easily unlock your scooter\")")
+                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Uses a PIN to protect Docs\")")
             ));
 
             String actual = normalize(descriptionText.getText());
             String expected =
-                    "Easily unlock your scooter with a simple code — no need to fumble with keys.";
+                    "Uses a PIN to protect Docs, OTA, GeoFence, and Incognito—securing critical features without slowing you down.";
 
             softAssert.assertEquals(actual, expected,
-                    "❌ Quick Unlock description mismatch");
+                    "❌ Secure Access description mismatch");
 
-            ExtentLogger.pass("✅ Quick Unlock description verified");
+            ExtentLogger.pass("✅  Secure Access description verified");
 
         } catch (Exception e) {
-            fail("❌ Quick Unlock description not found or incorrect", e);
+            fail("❌  Secure Access description not found or incorrect", e);
         }
     }
 
     private void verifySeamlessControlText() {
+        String expected = "Seamless Control";
         try {
             WebElement seamlessControlText = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    AppiumBy.androidUIAutomator("new UiSelector().text(\"Seamless Control\")")
+                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Seamless Control\")")
             ));
+            String actual = seamlessControlText.getText().trim();
 
-            softAssert.assertEquals(seamlessControlText.getText().trim(),
-                    "Seamless Control",
+            softAssert.assertEquals(actual,
+                    expected,
                     "❌ Seamless Control text mismatch");
 
-            ExtentLogger.pass("✅ Seamless Control text verified");
+            ExtentLogger.pass("✅ Seamless Control text verified :"+actual);
 
         } catch (Exception e) {
-            fail("❌ Seamless Control text not found or incorrect", e);
+            fail("❌ Seamless Control text not found or incorrect : "+expected, e);
         }
     }
 
@@ -186,11 +205,15 @@ public class SetYourPasscodeScreen extends BaseTest {
         try {
             WebElement infoText = wait.until(ExpectedConditions.visibilityOfElementLocated(
                     AppiumBy.androidUIAutomator(
-                            "new UiSelector().text(\"You can update passcode anytime in your settings.\")")
+                            "new UiSelector().textContains(\"You can update passcode anytime\")")
             ));
+            String actual = infoText.getText();
 
-            softAssert.assertTrue(infoText.isDisplayed(),
-                    "❌ Info text not displayed");
+            String expected =
+                    "You can update passcode anytime from your scooter garage.";
+
+            softAssert.assertEquals(actual, expected,
+                    "❌ Info text mismatch");
 
             ExtentLogger.pass("✅ Info text displayed");
 
@@ -202,8 +225,7 @@ public class SetYourPasscodeScreen extends BaseTest {
     private void verifyInfoIconDisplayed() {
         try {
             WebElement infoIcon = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.xpath("//android.widget.TextView[@text='You can update passcode anytime in your settings.']" +
-                            "/preceding-sibling::android.view.View[3]")
+                    AppiumBy.androidUIAutomator("new UiSelector().description(\"Info\")\n")
             ));
 
             softAssert.assertTrue(infoIcon.isDisplayed(),
@@ -219,7 +241,7 @@ public class SetYourPasscodeScreen extends BaseTest {
     private void clickContinueButton() {
         try {
             WebElement continueBtn = wait.until(ExpectedConditions.elementToBeClickable(
-                    AppiumBy.androidUIAutomator("new UiSelector().text(\"Continue\")")
+                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Continue\")")
             ));
 
             softAssert.assertTrue(continueBtn.isDisplayed(),

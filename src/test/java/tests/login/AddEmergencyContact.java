@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.asserts.SoftAssert;
 import tests.base.BaseTest;
+import tests.settings.editemergencycontact.EditEmergenctContactFlow;
 
 import java.util.Random;
 
@@ -14,6 +15,7 @@ public class AddEmergencyContact extends BaseTest {
 
     private final SoftAssert softAssert = new SoftAssert();
     GetStartedTests getStartedTests = new GetStartedTests();
+    EditEmergenctContactFlow editEmergenctContact  = new EditEmergenctContactFlow();
 
     // ====================== TEST ENTRY ======================
     public void addEmergencyContact() {
@@ -101,7 +103,7 @@ public class AddEmergencyContact extends BaseTest {
         }
     }
 
-    private void enterRandomNameInNameField() {
+    public void enterRandomNameInNameField() {
         try {
             WebElement nameInput = wait.until(ExpectedConditions.elementToBeClickable(
                     By.xpath("//android.widget.TextView[@text=\"Name\"]/..")
@@ -119,21 +121,22 @@ public class AddEmergencyContact extends BaseTest {
         }
     }
 
-    private void verifyAndEnterRandomMobileNumber() {
+    public void verifyAndEnterRandomMobileNumber() {
         try {
             WebElement mobileLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    AppiumBy.androidUIAutomator("new UiSelector().text(\"Mobile number\")")
+                    AppiumBy.androidUIAutomator("new UiSelector().text(\"Mobile Number\")")
             ));
 
             softAssert.assertEquals(mobileLabel.getText().trim(),
-                    "Mobile number",
+                    "Mobile Number",
                     "❌ Mobile number label mismatch");
 
             WebElement mobileInput = wait.until(ExpectedConditions.elementToBeClickable(
-                    By.xpath("//android.widget.TextView[@text='Mobile number']/..")
+                    By.xpath("//android.widget.TextView[@text=\"Mobile Number\"]/..")
             ));
 
             String randomMobile = generateRandomMobileNumber();
+            System.out.println(randomMobile);
             mobileInput.clear();
             mobileInput.sendKeys(randomMobile);
 
@@ -150,7 +153,7 @@ public class AddEmergencyContact extends BaseTest {
     private void verifyMobileNumberIconIsDisplayed() {
         try {
             WebElement icon = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.xpath("//android.widget.TextView[@text='Mobile number']/../../../android.view.View[last()]")
+                    AppiumBy.androidUIAutomator("new UiSelector().description(\"Contacts\")\n")
             ));
 
             softAssert.assertTrue(icon.isDisplayed(), "❌ Mobile number icon not displayed");
@@ -164,7 +167,7 @@ public class AddEmergencyContact extends BaseTest {
     private void verifyAndClickContinueButton() {
         try {
             WebElement continueButton = wait.until(ExpectedConditions.elementToBeClickable(
-                    AppiumBy.androidUIAutomator("new UiSelector().text(\"Continue\")")
+                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Continue\")")
             ));
 
             softAssert.assertEquals(continueButton.getText().trim(), "Continue",
@@ -185,13 +188,14 @@ public class AddEmergencyContact extends BaseTest {
         softAssert.fail(message, e);
     }
 
-    private String generateRandomName() {
+    public String generateRandomName() {
         String[] names = {"Aarav", "Rohan", "Vikram", "Kiran", "Neha", "Anita"};
         return names[new Random().nextInt(names.length)];
     }
 
-    private String generateRandomMobileNumber() {
+    public String generateRandomMobileNumber() {
         Random random = new Random();
         return "9" + (100000000 + random.nextInt(900000000));
     }
+
 }
