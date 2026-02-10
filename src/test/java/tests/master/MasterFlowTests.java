@@ -15,6 +15,7 @@ import tests.settings.mygarage.MyGarage;
 import tests.settings.mygarage.MyGarageFlow;
 import tests.settings.tyrepressure.TPMS;
 import tests.settings.tyrepressure.TPMSFlow;
+import tests.subscription.Subscription;
 
 @Listeners(listeners.ExtentListener.class)
 public class MasterFlowTests extends BaseTest {
@@ -28,6 +29,7 @@ public class MasterFlowTests extends BaseTest {
     MyGarageFlow myGarageFlow = new MyGarageFlow();
     TPMSFlow tpmsFlow = new TPMSFlow();
     EditEmergenctContactFlow editEmergenctContactFlow = new EditEmergenctContactFlow();
+    Subscription subscription = new Subscription();
 
 
     LogoutTests logout = new LogoutTests();
@@ -95,11 +97,19 @@ public void flow8_EditEmergencyConatct() {
     try {
         editEmergenctContactFlow.editEmergencyContact();
     } finally {
-        ensureLogout();
-        sleep(5000);
         softAssert.assertAll();
     }
 }
+    @Test(priority = 9)
+    public void flow8_Subscription() {
+        try {
+            subscription.subscription();
+        } finally {
+            ensureLogout();
+            sleep(5000);
+            softAssert.assertAll();
+        }
+    }
 
     private void ensureLogout() {
         try {

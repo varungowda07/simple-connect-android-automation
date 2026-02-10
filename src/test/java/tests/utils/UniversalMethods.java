@@ -158,10 +158,9 @@ public class UniversalMethods extends BaseTest {
                 )
         );
     }public void scrollDownOnce() {
-        driver.findElement(
+       driver.findElement(
                 AppiumBy.androidUIAutomator(
-                        "new UiScrollable(new UiSelector().scrollable(true)).scrollForward()"
-                )
+                        "new UiScrollable(new UiSelector().scrollable(true)).scrollForward()")
         );
     }
 

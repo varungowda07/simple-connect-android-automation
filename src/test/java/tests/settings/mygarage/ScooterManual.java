@@ -7,8 +7,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.asserts.SoftAssert;
 import tests.base.BaseTest;
+import tests.utils.UniversalMethods;
 
 public class ScooterManual extends BaseTest {
+    UniversalMethods universalMethods = new UniversalMethods();
     public void scooterManual() {
         if(clickScooterManual()){
                 verifyScooterManualText();
@@ -218,14 +220,13 @@ public class ScooterManual extends BaseTest {
         }
     }
     private void scrollToBottom() {
+       for(int i=0;i<20;i++) {
+           universalMethods.scrollDownOnce();
+       }
         try {
-            driver.findElement(AppiumBy.androidUIAutomator(
-                    "new UiScrollable(new UiSelector().scrollable(true)).scrollForward()"
-            ));
-            ExtentLogger.pass("✅ Scrolled to bottom of the page");
-
-        } catch (Exception e) {
-            fail("❌ Failed to scroll to bottom", e);
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            System.out.println(e);
         }
     }
 

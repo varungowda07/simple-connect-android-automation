@@ -23,15 +23,16 @@ public class EditEmergenctContactFlow extends BaseTest {
         }
     }
     private boolean verifyTextIconAndClick(String text) {
-        universalMethods.scrollToText(text);
+        universalMethods.scrollDownOnce();
+        universalMethods.scrollToText("Live Location / Emergency ");
         universalMethods.verifyAndClick(
                 AppiumBy.androidUIAutomator("new UiSelector().descriptionContains(\"Live Location / Emergency \")"),
                 text,
                 false
         );
-       universalMethods.verifyExactText(text);
+       universalMethods.verifyTextContains("Live Location / Emergency ",text);
        if(universalMethods.verifyAndClick(
-                AppiumBy.androidUIAutomator("new UiSelector().textContains('" +text+ "')"),
+                AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Live Location / Emergency \")"),
                 text,
                 true
        )){

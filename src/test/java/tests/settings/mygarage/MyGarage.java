@@ -144,7 +144,7 @@ public class MyGarage extends BaseTest {
         try {
             WebElement indImage = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//android.widget.ScrollView/android.view.View[1]/android.view.View[3]/android.view.View")
+                            AppiumBy.androidUIAutomator("new UiSelector().description(\"Number Plate\")")
                     )
             );
 

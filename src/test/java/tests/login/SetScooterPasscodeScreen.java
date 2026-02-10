@@ -14,22 +14,19 @@ public class SetScooterPasscodeScreen extends BaseTest {
 
     // ====================== TEST ENTRY ======================
     public void setScooterPasscodeScreen() {
-        ExtentLogger.info("🔢 Set Scooter Passcode Screen Test Started");
 
-        verifySetScooterPasscodeText();
+        verifySetScooterPasscodeText("Set Scooter");
         verifyChoose4DigitPasscodeText();
         enter4DigitPasscode(passcode);
         verifyAndClickContinueButton();
-
-        ExtentLogger.info("✅ Set Scooter Passcode Screen Test Completed");
     }
 
     // ====================== VALIDATIONS ======================
 
-    private void verifySetScooterPasscodeText() {
+    public void verifySetScooterPasscodeText(String name) {
         try {
             WebElement passcodeText = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Set Scooter\")")
+                    AppiumBy.androidUIAutomator("new UiSelector().textContains('" +name+ "')")
             ));
 
             String actualText = passcodeText.getText();
@@ -44,7 +41,7 @@ public class SetScooterPasscodeScreen extends BaseTest {
     }
 
 
-    private void verifyChoose4DigitPasscodeText() {
+    public void verifyChoose4DigitPasscodeText() {
         try {
             WebElement passcodeText = wait.until(ExpectedConditions.visibilityOfElementLocated(
                     AppiumBy.androidUIAutomator("new UiSelector().text(\"Choose a 4-digit passcode.\")")
@@ -60,7 +57,7 @@ public class SetScooterPasscodeScreen extends BaseTest {
         }
     }
 
-    private void enter4DigitPasscode(String passcode) {
+    public boolean enter4DigitPasscode(String passcode) {
         try {
             WebElement passcodeField = wait.until(ExpectedConditions.visibilityOfElementLocated(
                     AppiumBy.androidUIAutomator("new UiSelector().className(\"android.widget.EditText\")")
@@ -70,9 +67,11 @@ public class SetScooterPasscodeScreen extends BaseTest {
             passcodeField.sendKeys(passcode);
 
             ExtentLogger.pass("✅ Entered 4-digit passcode: " + passcode);
+            return true;
 
         } catch (Exception e) {
             fail("❌ Failed to enter passcode", e);
+            return false;
         }
     }
 

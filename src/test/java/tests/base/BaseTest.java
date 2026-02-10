@@ -4,12 +4,15 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.nativekey.AndroidKey;
 import io.appium.java_client.android.options.UiAutomator2Options;
 import io.appium.java_client.appmanagement.ApplicationState;
 import listeners.ExtentLogger;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.*;
 import tests.utils.ExtentManager;
+import io.appium.java_client.android.nativekey.AndroidKey;
+import io.appium.java_client.android.nativekey.KeyEvent;
 
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -121,13 +124,13 @@ public class BaseTest {
 
             Map<String, Object> terminateArgs = new HashMap<>();
             terminateArgs.put("appId", APP_PACKAGE);
-            terminateArgs.put("timeout", 1500); // Samsung-safe timeout
+            terminateArgs.put("timeout", 2000); // Samsung-safe timeout
 
             driver.executeScript("mobile: terminateApp", terminateArgs);
-            Thread.sleep(500);
+            Thread.sleep(1000);
 
             driver.activateApp(APP_PACKAGE);
-            Thread.sleep(1000);
+            Thread.sleep(8000);
 
             System.out.println("✅ App terminated and activated successfully");
 
@@ -138,6 +141,7 @@ public class BaseTest {
                 driver.runAppInBackground(Duration.ofSeconds(10));
                 driver.activateApp(APP_PACKAGE);
                 System.out.println("✅ App recovered via fallback");
+                Thread.sleep(5000);
             } catch (Exception ex) {
                 System.out.println("❌ App restart failed: " + ex.getMessage());
             }
@@ -149,16 +153,33 @@ public class BaseTest {
             driver.navigate().back();
             Thread.sleep(1000);
         } catch (Exception e) {
-            // Fallback: Device keyevent
-            Map<String, Object> params = Map.of("command", "input keyevent 4");
-            driver.executeScript("mobile: shell", params);
             try {
+                // Fallback: Use Android key event instead of shell
+                driver.pressKey(new KeyEvent(AndroidKey.BACK));
                 Thread.sleep(1500);
-            } catch (InterruptedException ex) {
-                System.out.println(ex);
+                System.out.println("✅ Back via key event");
+            } catch (Exception ex) {
+                System.out.println("⚠️ Back button failed: " + ex.getMessage());
             }
         }
     }
+
+//    public static void safeBack() {
+//        try {
+//            // Try normal back first
+//            driver.navigate().back();
+//            Thread.sleep(1000);
+//        } catch (Exception e) {
+//            // Fallback: Device keyevent
+//            Map<String, Object> params = Map.of("command", "input keyevent 4");
+//            driver.executeScript("mobile: shell", params);
+//            try {
+//                Thread.sleep(1500);
+//            } catch (InterruptedException ex) {
+//                System.out.println(ex);
+//            }
+//        }
+//    }
     private void clearAppData(String packageName) throws Exception {
         System.out.println("Clearing app data via ADB...");
         Process process = Runtime.getRuntime().exec("adb shell pm clear " + packageName);
@@ -194,37 +215,37 @@ public class BaseTest {
         }
     }
 
-//    // ===================== UTILITIES =====================
-//    private void enableNotifications(String packageName) {
-//        try {
-//            HashMap<String, Object> args = new HashMap<>();
-//            args.put("command", "appops");
-//            args.put("args", new String[]{
-//                    "set",
-//                    packageName,
-//                    "POST_NOTIFICATION",
-//                    "allow"
-//            });
-//
-//            driver.executeScript("mobile: shell", args);
-//            System.out.println("✅ Notifications enabled");
-//        } catch (Exception e) {
-//            System.out.println("⚠️ Notification enable failed: " + e.getMessage());
-//        }
-//    }
-//
-//    protected void handleNotificationPermissionPopup() {
-//        try {
-//            driver.findElement(
-//                    AppiumBy.androidUIAutomator(
-//                            "new UiSelector().textMatches(\"(?i)allow|while using the app\")"
-//                    )
-//            ).click();
-//            System.out.println("✅ Notification permission accepted");
-//        } catch (Exception ignored) {
-//            System.out.println("ℹ️ No notification popup shown");
-//        }
-//    }
+    // ===================== UTILITIES =====================
+    private void enableNotifications(String packageName) {
+        try {
+            HashMap<String, Object> args = new HashMap<>();
+            args.put("command", "appops");
+            args.put("args", new String[]{
+                    "set",
+                    packageName,
+                    "POST_NOTIFICATION",
+                    "allow"
+            });
+
+            driver.executeScript("mobile: shell", args);
+            System.out.println("✅ Notifications enabled");
+        } catch (Exception e) {
+            System.out.println("⚠️ Notification enable failed: " + e.getMessage());
+        }
+    }
+
+    protected void handleNotificationPermissionPopup() {
+        try {
+            driver.findElement(
+                    AppiumBy.androidUIAutomator(
+                            "new UiSelector().textMatches(\"(?i)allow|while using the app\")"
+                    )
+            ).click();
+            System.out.println("✅ Notification permission accepted");
+        } catch (Exception ignored) {
+            System.out.println("ℹ️ No notification popup shown");
+        }
+    }
 }
 //
 ////package tests.base;

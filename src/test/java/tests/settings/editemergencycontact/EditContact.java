@@ -106,7 +106,7 @@ public class EditContact extends BaseTest {
                     "❌ Mobile number label mismatch");
 
             WebElement mobileInput = wait.until(ExpectedConditions.elementToBeClickable(
-                    By.xpath("//android.widget.TextView[@text=\"Mobile number\"]\n" +
+                    By.xpath("//android.widget.TextView[@text=\"Mobile Number\"]\n" +
                             "/../android.widget.EditText")
             ));
             mobileInput.clear();

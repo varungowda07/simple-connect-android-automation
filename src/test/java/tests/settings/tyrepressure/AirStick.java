@@ -14,7 +14,7 @@ public class AirStick extends BaseTest {
     UniversalMethods universalMethods = new UniversalMethods();
     public void airStick() {
         if (universalMethods.verifyAndClick(
-                AppiumBy.androidUIAutomator("new UiSelector().description(\"Forward\")"),
+                By.xpath("//android.widget.ImageView[@content-desc=\"Info\"]/preceding-sibling::android.view.View[3]"),
                 "Air Stick Greater than icon ",
                 true)) {
             universalMethods.verifyExactText("AIRSTICK");
@@ -52,7 +52,7 @@ public class AirStick extends BaseTest {
     private void verifyTextAndIcon(String text) {
         universalMethods.verifyExactText(text);
         universalMethods.verifyAndClick(
-                AppiumBy.androidUIAutomator("new UiSelector().description('" +text+ "')"),
+                AppiumBy.androidUIAutomator("new UiSelector().descriptionContains('" + text + "')"),
                 text+" Icon ",
                 false
         );

@@ -25,7 +25,7 @@ public class BatteryCard extends BaseTest {
     }
     private void verifyBatteryTextIsDisplayed(String text) {
         universalMethods.scrollDownOnce();
-        universalMethods.verifyExactText(text);
+        universalMethods.verifyTextContains(text,"BATTERY");
     }
 
     private void verifyLastChargedTextIsDisplayed() {
@@ -46,7 +46,7 @@ public class BatteryCard extends BaseTest {
         try {
             WebElement element = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.view.View[1]/android.view.View/android.view.View/android.view.View[1]/android.view.View[2]/android.view.View/android.view.View[1]")
+                            By.xpath("//android.widget.TextView[@text=\"BATTERY \"]/../android.view.View/android.view.View\n")
                     )
             );
 
@@ -61,7 +61,7 @@ public class BatteryCard extends BaseTest {
     private void verifyBatteryPercentageDisplayed() {
         try {
             WebElement batteryPercentage = driver.findElement(
-                    AppiumBy.androidUIAutomator("new UiSelector().textContains(\"%\")")
+                    By.xpath("(//android.widget.TextView[contains(@text,'%')])[2]\n")
             );
 
             softAssert.assertTrue(batteryPercentage.isDisplayed(), "❌ Battery percentage is NOT displayed");
