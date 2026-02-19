@@ -7,7 +7,16 @@ import tests.utils.UniversalMethods;
 
 public class PasswordsScreen extends BaseTest {
     UniversalMethods universalMethods = new UniversalMethods();
-    String[] toggles = {"Passwords","Documents","Documents","Documents","Geofence"};
+    ResetPasscodeScreen resetPasscodeScreen = new ResetPasscodeScreen();
+    public void passwordScreen() {
+        verifyLong();
+        verifyIconTextAndToggle();
+        if(verifyResetTextAndClick()) {
+          resetPasscodeScreen.resetPasscodeScreen();
+        }
+    }
+
+    String[] toggles = {"Passwords","Documents","OTA Updates","Incognito","Geofence"};
     private void verifyLong() {
         universalMethods.verifyTextContains(
                 "When the app lock is active, the app will use the default phone lock",
@@ -15,15 +24,21 @@ public class PasswordsScreen extends BaseTest {
     }
     private void verifyIconTextAndToggle() {
         for(int i=0;i<toggles.length;i++) {
+            String iconLocator = String.format("new UiSelector().description(\"%s\")", toggles[i]);
             universalMethods.verifyAndClick(
-                    AppiumBy.androidUIAutomator("new UiSelector().description('" +toggles[i]+ "')"),
+                    AppiumBy.androidUIAutomator(iconLocator),
                     toggles[i]+" Icon Displayed",
                     false
             );
             universalMethods.verifyExactText(toggles[i]);
+            String toggleXpath = String.format(
+                    "//android.widget.TextView[@text='%s']/following-sibling::android.view.View[%d]",
+                    toggles[i],
+                    i
+            );
             if(i !=0) {
                 universalMethods.verifyAndClick(
-                        By.xpath("//android.widget.TextView[@text='" +toggles[i]+ "']/following-sibling::android.view.View[i]"),
+                        By.xpath(toggleXpath),
                         toggles[i]+" turned on",
                         true
                 );

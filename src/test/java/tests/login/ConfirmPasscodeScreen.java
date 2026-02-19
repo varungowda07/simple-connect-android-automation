@@ -11,24 +11,16 @@ import tests.utils.UniversalMethods;
 public class ConfirmPasscodeScreen extends BaseTest {
 
     private final SoftAssert softAssert = new SoftAssert();
-    private final String passcode = "1234";
     UniversalMethods universalMethods = new UniversalMethods();
 
     // ====================== TEST ENTRY ======================
-    public void confirmPasscode() {
+    public boolean confirmPasscode(String passcode) {
         ExtentLogger.info("🔐 Confirm Passcode Screen Test Started");
 
         verifyConfirmPasscodeText();
         verifyReEnter4DigitPasscodeText();
         enter4DigitPasscode(passcode);
-        verifyAndClickConfirmButton();
-        universalMethods.verifyAndClick(
-                AppiumBy.androidUIAutomator("new UiSelector().text(\"Allow\")"),
-                "Allow",
-                true
-        );
-
-        ExtentLogger.info("✅ Confirm Passcode Screen Test Completed");
+        return verifyAndClickConfirmButton();
     }
 
     // ====================== VALIDATIONS ======================
@@ -83,7 +75,7 @@ public class ConfirmPasscodeScreen extends BaseTest {
         }
     }
 
-    private void verifyAndClickConfirmButton() {
+    private boolean verifyAndClickConfirmButton() {
         try {
             WebElement confirmBtn = wait.until(ExpectedConditions.elementToBeClickable(
                     AppiumBy.androidUIAutomator("new UiSelector().text(\"Confirm\")")
@@ -94,9 +86,11 @@ public class ConfirmPasscodeScreen extends BaseTest {
 
             confirmBtn.click();
             ExtentLogger.pass("✅ 'Confirm' button is displayed and clicked");
+            return true;
 
         } catch (Exception e) {
             fail("❌ 'Confirm' button not clickable", e);
+            return false;
         }
     }
 

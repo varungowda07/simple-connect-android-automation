@@ -6,6 +6,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.asserts.SoftAssert;
+import tests.utils.UniversalMethods;
 
 import static tests.base.BaseTest.wait;
 
@@ -13,6 +14,7 @@ public class PasscodeSuccessScreen {
 
     private final SoftAssert softAssert = new SoftAssert();
     private final SetScooterPasscodeScreen setScooterPasscodeScreen = new SetScooterPasscodeScreen();
+    UniversalMethods universalMethods = new UniversalMethods();
 
     // ====================== FLOW ======================
     public void passcodeSuccessScreen() {

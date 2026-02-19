@@ -9,10 +9,11 @@ import tests.utils.UniversalMethods;
 public class PasswordFlow extends BaseTest {
     UniversalMethods universalMethods  = new UniversalMethods();
     MyGarage myGarage = new MyGarage();
+    EnterPasscodeScreen enterPasscodeScreen = new EnterPasscodeScreen();
     public void passwordFlow() {
         if(myGarage.verifySettingsIconIsDisplayed()) {
             if(verifyTextAndClick()) {
-                
+                enterPasscodeScreen.enterPasscodeScreen();
             }
         }
 
@@ -26,13 +27,15 @@ public class PasswordFlow extends BaseTest {
         universalMethods.verifyAndClick(
                 AppiumBy.androidUIAutomator("new UiSelector().description(\"Password\")"),
                 "Password description Icon",
-                true
+                false
         );
-        return universalMethods.verifyAndClick(
+        boolean result = universalMethods.verifyAndClick(
                 By.xpath("//android.widget.TextView[@text=\"Password\"]/following-sibling::android.view.View"),
                 "Password Forward Arrow",
                 true
         );
+        System.out.println("result "+ result);
+        return result;
 
     }
 }

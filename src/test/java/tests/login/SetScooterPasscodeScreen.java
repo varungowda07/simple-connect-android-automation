@@ -61,6 +61,7 @@ public class SetScooterPasscodeScreen extends BaseTest {
         try {
             WebElement passcodeField = wait.until(ExpectedConditions.visibilityOfElementLocated(
                     AppiumBy.androidUIAutomator("new UiSelector().className(\"android.widget.EditText\")")
+
             ));
 
             passcodeField.clear();
@@ -75,7 +76,7 @@ public class SetScooterPasscodeScreen extends BaseTest {
         }
     }
 
-    private void verifyAndClickContinueButton() {
+    public boolean verifyAndClickContinueButton() {
         try {
             WebElement continueBtn = wait.until(ExpectedConditions.elementToBeClickable(
                     AppiumBy.androidUIAutomator("new UiSelector().textContains(\"Continue\")")
@@ -86,9 +87,11 @@ public class SetScooterPasscodeScreen extends BaseTest {
 
             continueBtn.click();
             ExtentLogger.pass("✅ 'Continue' button is displayed and clicked");
+            return true;
 
         } catch (Exception e) {
             fail("❌ 'Continue' button not clickable", e);
+            return  false;
         }
     }
 

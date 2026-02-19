@@ -30,7 +30,7 @@ public class UniversalMethods extends BaseTest {
             System.out.println(actualText +" text found");
 
         } catch (Exception e) {
-            System.out.println(expectedText +" text found");
+            System.out.println(expectedText +" text not found");
             fail("❌ Text verification failed for: " + expectedText, e);
         }
     }
