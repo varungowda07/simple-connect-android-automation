@@ -2,28 +2,25 @@ package tests.password;
 
 import io.appium.java_client.AppiumBy;
 import listeners.ExtentLogger;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.asserts.SoftAssert;
 import tests.base.BaseTest;
 import tests.utils.UniversalMethods;
 
-public class PasscodeResetSuccessScreen extends BaseTest {
+public class PasscodeSetSuccessScreen extends BaseTest {
     UniversalMethods universalMethods = new UniversalMethods();
-    ResetPasscodeScreen resetPasscodeScreen = new ResetPasscodeScreen();
     SoftAssert softAssert = new SoftAssert();
-    public void passcodeResetSuccessScreen() {
+    public void passcodeSuccessScreen2() {
         verifyText();
         verifyNewPasscodeValue();
         if(clickDoneBtn()) {
-            System.out.println("Passcode reset success");
-            driver.navigate().back();
+            System.out.println("Passcode set success");
         }
 
     }
     private void verifyText() {
-        universalMethods.verifyTextContains("passcode reset successfully","passcode reset");
+        universalMethods.verifyTextContains("passcode set successfully","passcode set");
         universalMethods.verifyExactText("Your new passcode is now active.");
         universalMethods.verifyExactText("NEW PASSCODE");
         universalMethods.verifyExactText("Done");
@@ -49,7 +46,7 @@ public class PasscodeResetSuccessScreen extends BaseTest {
             );
 
             String actualPasscode = passcodeValue.getText().trim();
-            String expectedPasscode = resetPasscodeScreen.passcode;
+            String expectedPasscode = "1234";
 
             softAssert.assertEquals(actualPasscode, expectedPasscode,
                     "❌ Passcode mismatch");

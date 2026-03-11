@@ -76,6 +76,7 @@ public class BaseTest {
                 .setAutoGrantPermissions(true);
 
         options.setCapability("appium:autoAcceptAlerts", true);
+        options.setCapability("newCommandTimeout", 0);
 
         driver = new AndroidDriver(
                 new URL("http://127.0.0.1:4723/"),

@@ -34,7 +34,7 @@ public class PasswordsScreen extends BaseTest {
             String toggleXpath = String.format(
                     "//android.widget.TextView[@text='%s']/following-sibling::android.view.View[%d]",
                     toggles[i],
-                    i
+                    1
             );
             if(i !=0) {
                 universalMethods.verifyAndClick(

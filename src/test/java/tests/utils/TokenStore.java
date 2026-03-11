@@ -7,7 +7,7 @@ public class TokenStore {
     private static String vin;
     private static String emergencyContactId;
     private static String refreshToken;
-    public String mobileNumber = "9999999999";
+    public String mobileNumber = "6666666666";
     public static String getAccessToken() {
         return accessToken;
     }

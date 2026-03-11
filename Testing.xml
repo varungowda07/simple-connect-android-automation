@@ -1,15 +1,12 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="MasterFlow">
-
     <!-- ✅ Listeners must be directly under suite -->
     <listeners>
         <listener class-name="listeners.ExtentListener"/>
     </listeners>
-
     <test name="CompleteFlow">
         <classes>
             <class name="tests.master.MasterFlowTests"/>
         </classes>
     </test>
-
 </suite>

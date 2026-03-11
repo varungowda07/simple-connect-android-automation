@@ -20,8 +20,8 @@ public class PasswordFlow extends BaseTest {
 
     }
     private boolean verifyTextAndClick() {
-        universalMethods.scrollDownOnce();
         universalMethods.scrollToText("SECURITY");
+        universalMethods.scrollDownOnce();
         universalMethods.verifyExactText("SECURITY");
         universalMethods.verifyExactText("Password");
         universalMethods.verifyAndClick(
